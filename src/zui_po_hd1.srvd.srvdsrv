@@ -1,0 +1,4 @@
+@EndUserText.label: 'PO HEAD Service Definition'
+define service ZUI_PO_HD1 {
+  expose ZC_PO_HD as PO_Header;
+}

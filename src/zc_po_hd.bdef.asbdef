@@ -1,0 +1,21 @@
+projection;
+strict ( 2 );
+
+define behavior for ZC_PO_HD alias po
+{
+  use create;
+  use update;
+  use delete;
+
+  use action Approval result entity ZC_PO_HD;
+  use association _po_item { create; }
+
+}
+
+define behavior for ZC_PO_ITM alias poi
+{
+  use update;
+  use delete;
+
+  use association _hd;
+}

@@ -1,0 +1,124 @@
+@Metadata.layer: #CORE
+@UI.headerInfo:{
+typeName: 'Purchase  Order',
+typeNamePlural: 'Purchase Orders',
+title:
+{
+//value: 'Description'}
+//description:{
+label: 'Purchase Order Details',
+type: #STANDARD,
+value: 'PoNum'
+}
+
+}
+
+annotate entity ZC_PO_HD with
+{
+  @UI.facet: [{
+  id: 'POHd',
+  purpose: #STANDARD,
+  position: 10,
+  //type:#IDENTIFICATION_REFERENCE,
+  type:#COLLECTION,
+  label: 'Purchase Order Header'
+  },
+  
+  {
+   id: 'BasicInfo',
+   purpose:#STANDARD,
+   parentId: 'POHd',
+   position:10,
+   targetQualifier: 'BasicGroup',
+   type:#FIELDGROUP_REFERENCE,
+   label:'Basic Data'
+   },
+   
+   {
+   id: 'OrgInfo',
+   purpose:#STANDARD,
+   parentId: 'POHd',
+   position:20,
+   targetQualifier: 'OrgGroup',
+   type:#FIELDGROUP_REFERENCE,
+   label:'Organization Data'
+
+   },
+
+   {
+   id: 'MorDet',
+   purpose:#STANDARD,
+   parentId: 'POHd',
+   position:30,
+   targetQualifier: 'MoreDet',
+   type:#FIELDGROUP_REFERENCE,
+   label:'More Details'
+
+   },
+
+
+   {
+  id:'Header1',
+  purpose: #HEADER,
+  type:#DATAPOINT_REFERENCE,
+  targetQualifier:'HD',
+  position: 10
+   },
+
+  {
+  id: 'POItemInfo',
+  purpose: #STANDARD,
+  type:#LINEITEM_REFERENCE,
+  position: 20,
+  targetElement: '_po_item',
+  label: 'Purchase Order Items'
+  }
+  ]
+
+
+  @UI.lineItem: [{ position: 10,label: 'Purchase Order',type: #WITH_INTENT_BASED_NAVIGATION,semanticObjectAction: ''}]
+  @UI.selectionField: [{ position: 10 }]
+ // @UI.identification: [{ position: 10,label: 'Purchase Order'  }]
+  @UI.fieldGroup: [{ position: 10, label: 'Purchase Order',qualifier: 'BasicGroup' }]
+  @UI.dataPoint:{ title:'Purchase Order', qualifier: 'HD' }
+  PoNum;
+
+  @UI.lineItem: [{ position: 15,label: 'Purchase Order Descrption' ,importance:#LOW}]
+ // @UI.identification: [{ position: 15,label: 'Purchase Order Descrption'  }]
+  @UI.fieldGroup: [{ position: 15, label: 'Purchase Order Descrption',qualifier: 'BasicGroup' }]
+  Description;
+
+  @UI.lineItem: [{ position: 30,label: 'Order Type', importance: #HIGH }]
+ // @UI.identification: [{ position: 30,label: 'Order Type'  }]
+  @UI.fieldGroup: [{ position: 30, label: 'Order Type',qualifier: 'BasicGroup' }]
+  OrderType;
+
+  @UI.lineItem: [{ position: 40,label: 'Company Code', importance: #HIGH }]
+ // @UI.identification: [{ position: 40,label: 'Company Code' }]
+  @UI.fieldGroup: [{ position: 40, label: 'Company Code',qualifier: 'OrgGroup' }]
+  CompanyCode;
+
+  // @UI.fieldGroup: [{ position: 20, label: 'Organization',qualifier: 'OrgGroup' }]
+  @UI.lineItem: [{ position: 50,label: 'Organization', importance: #HIGH }]
+ // @UI.identification: [{ position: 50,label: 'Organization'  }]
+  @UI.fieldGroup: [{ position: 50, label: 'Organization',qualifier: 'OrgGroup' }]
+  Organization;
+
+  @UI.lineItem: [{ position: 60, label: 'Vendor' }]
+  @UI.selectionField: [{ position: 30 }]
+//  @UI.identification: [{ position: 60, label: 'Vendor'  }]
+  @UI.fieldGroup: [{ position: 60, label: 'Vendor',qualifier: 'OrgGroup' }]
+  @Consumption.valueHelpDefinition: [{entity:{ name: 'ZI_VEND', element:'Vendor' }}]
+  Vendor;
+
+  @UI.lineItem: [{ position: 70,label: 'Approval', type: #FOR_ACTION, dataAction: 'Approval' }]
+//  @UI.identification: [{ position: 70,label: 'Purchase Status' }]
+  @UI.fieldGroup: [{ position: 70, label: 'Purchase Status',qualifier: 'BasicGroup' }]
+  POStatus;
+
+//  @UI.identification: [{ position: 80,label: 'Creation Date' }]
+  @UI.fieldGroup: [{ position: 80, label: 'Creation Date',qualifier: 'MoreDet' }]
+   CreatedDateTime;
+
+
+}

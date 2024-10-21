@@ -1,0 +1,52 @@
+managed implementation in class zbp_i_po_hd unique;
+strict ( 2 );
+
+define behavior for ZI_PO_HD //alias <alias_name>
+with unmanaged save
+//persistent table zat_po_hd
+lock master
+authorization master ( instance )
+//etag master <field_name>
+{
+
+  //field ( readonly ) PoNum, OrderType;
+   field ( mandatory : create )
+   PoNum;
+  create;
+  update;
+  delete;
+
+  field ( readonly : update )
+   PoNum;
+
+  action(features : instance) Approval result[1] $self;
+  association _po_item { create; }
+
+  mapping for ZI_PO_HD corresponding {
+  OrderType = OrderType;
+  CompanyCode = CompanyCode;
+  Organization = Organization;
+  Vendor = Vendor;
+  }
+
+
+}
+
+define behavior for ZI_PO_ITEMS
+with unmanaged save
+lock dependent by _hd
+authorization dependent by _hd
+{
+field ( readonly ) PoNum,
+PoItem;
+
+update;
+delete;
+
+association _hd;
+mapping for ZI_PO_ITEMS corresponding {
+
+Material = Material;
+PoQty = PoQty;
+}
+}
