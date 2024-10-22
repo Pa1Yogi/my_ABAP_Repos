@@ -1,0 +1,122 @@
+@Metadata.layer: #CUSTOMER
+@UI:{ headerInfo: {
+    typeName: 'PurchaseOrder',
+    typeNamePlural: 'PurchaseOrders',
+    title: {
+        type: #STANDARD,
+        value: 'PoNum'
+    }
+} }
+annotate entity ZC_PO_HEAD with
+{
+  @UI.facet: [{
+  id: 'POHd',
+  purpose: #STANDARD,
+  position: 10,
+  type:#IDENTIFICATION_REFERENCE,
+  // type:#COLLECTION,
+  label: 'Purchase Order Header'
+  },
+  /*
+
+  {
+  id: 'BasicInfo',
+  purpose:#STANDARD,
+  parentId: 'POHd',
+  position:10,
+  targetQualifier: 'BasicGroup',
+  type:#FIELDGROUP_REFERENCE,
+  label:'Basic Data'
+  },
+
+  {
+  id: 'OrgInfo',
+  purpose:#STANDARD,
+  parentId: 'POHd',
+  position:20,
+  targetQualifier: 'OrgGroup',
+  type:#FIELDGROUP_REFERENCE,
+  label:'Organization Data'
+
+  },
+
+  {
+  id: 'MorDet',
+  purpose:#STANDARD,
+  parentId: 'POHd',
+  position:30,
+  targetQualifier: 'MoreDet',
+  type:#FIELDGROUP_REFERENCE,
+  label:'More Details'
+
+  },
+
+
+  {
+  id:'Header1',
+  purpose: #HEADER,
+  type:#DATAPOINT_REFERENCE,
+  targetQualifier:'HD',
+  position: 10
+  }, */
+
+  {
+  id: 'POItems',
+  purpose: #STANDARD,
+  type:#LINEITEM_REFERENCE,
+  position: 20,
+  targetElement: '_PO_items',
+  label: 'Purchase Order Items'
+  }
+  ]
+
+
+  @UI.lineItem: [{ position: 10,label: 'Purchase Order'}]
+  @UI.selectionField: [{ position: 10 }]
+  @UI.identification: [{ position: 10,label: 'Purchase Order'  }]
+  // @UI.fieldGroup: [{ position: 10, label: 'Purchase Order',qualifier: 'BasicGroup' }]
+  @UI.dataPoint:{ title:'Purchase Order', qualifier: 'HD' }
+  PoNum;
+
+  @UI.lineItem: [{ position: 30,label: 'Order Type', importance: #HIGH }]
+  @UI.identification: [{ position: 30,label: 'Order Type'  }]
+  // @UI.fieldGroup: [{ position: 30, label: 'Order Type',qualifier: 'BasicGroup' }]
+  Type;
+
+  @UI.lineItem: [{ position: 40,label: 'Company Code', importance: #HIGH }]
+  @UI.identification: [{ position: 40,label: 'Company Code' }]
+  // @UI.fieldGroup: [{ position: 40, label: 'Company Code',qualifier: 'OrgGroup' }]
+  CompCode;
+
+  // @UI.fieldGroup: [{ position: 50, label: 'Organization',qualifier: 'OrgGroup' }]
+  @UI.lineItem: [{ position: 50,label: 'Organization', importance: #HIGH }]
+  @UI.identification: [{ position: 50,label: 'Organization'  }]
+  // @UI.fieldGroup: [{ position: 50, label: 'Organization',qualifier: 'OrgGroup' }]
+  Org;
+
+  @UI.lineItem: [{ position: 60, label: 'Vendor' }]
+  @UI.selectionField: [{ position: 30 }]
+  @UI.identification: [{ position: 60, label: 'Vendor'  }]
+  //  @UI.fieldGroup: [{ position: 60, label: 'Vendor',qualifier: 'OrgGroup' }]
+ // @Consumption.valueHelpDefinition: [{entity:{ name: 'ZI_VEND', element:'Vendor' }}]
+  Vendor;
+
+  @UI.lineItem: [{ position: 70, label: 'Plant' }]
+  @UI.selectionField: [{ position: 70 }]
+  @UI.identification: [{ position: 70, label: 'Plant'  }]
+  //  @UI.fieldGroup: [{ position: 70, label: 'Plant',qualifier: 'OrgGroup' }]
+  Plant;
+
+  @UI.lineItem: [{ position: 80,label: 'Status'},{ type: #FOR_ACTION, dataAction: 'Post' ,
+                                                                   label: 'Post'}]
+  @UI.identification: [{ position: 80,label: 'Purchase Status' }]
+  // @UI.fieldGroup: [{ position: 80, label: 'Purchase Status',qualifier: 'BasicGroup' }]
+  Status;
+
+  @UI.identification: [{ position: 90,label: 'Creation Date' }]
+  // @UI.fieldGroup: [{ position: 90, label: 'Creation Date',qualifier: 'MoreDet' }]
+  CreatedDateTime;
+
+
+
+}
