@@ -8,7 +8,8 @@
     sizeCategory: #S,
     dataClass: #MIXED
 }
-define view entity ZC_PO_ITEMS as projection on ZI_PO_ITMS
+define view entity ZC_PO_ITEMS 
+ as projection on ZI_PO_ITMS
 {
     key PoNum,
     key PoItem,

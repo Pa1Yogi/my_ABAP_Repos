@@ -1,7 +1,7 @@
 @Metadata.layer: #CUSTOMER
 @UI:{ headerInfo: {
-    typeName: 'PurchaseOrder',
-    typeNamePlural: 'PurchaseOrders',
+    typeName: 'Purchase Order',
+    typeNamePlural: 'Purchase Orders',
     title: {
         type: #STANDARD,
         value: 'PoNum'
@@ -13,11 +13,11 @@ annotate entity ZC_PO_HEAD with
   id: 'POHd',
   purpose: #STANDARD,
   position: 10,
-  type:#IDENTIFICATION_REFERENCE,
-  // type:#COLLECTION,
+  //type:#IDENTIFICATION_REFERENCE,
+  type:#COLLECTION,
   label: 'Purchase Order Header'
   },
-  /*
+  
 
   {
   id: 'BasicInfo',
@@ -26,7 +26,7 @@ annotate entity ZC_PO_HEAD with
   position:10,
   targetQualifier: 'BasicGroup',
   type:#FIELDGROUP_REFERENCE,
-  label:'Basic Data'
+  label:'Basic Details'
   },
 
   {
@@ -36,7 +36,7 @@ annotate entity ZC_PO_HEAD with
   position:20,
   targetQualifier: 'OrgGroup',
   type:#FIELDGROUP_REFERENCE,
-  label:'Organization Data'
+  label:'Organization Details'
 
   },
 
@@ -58,7 +58,7 @@ annotate entity ZC_PO_HEAD with
   type:#DATAPOINT_REFERENCE,
   targetQualifier:'HD',
   position: 10
-  }, */
+  }, 
 
   {
   id: 'POItems',
@@ -73,48 +73,48 @@ annotate entity ZC_PO_HEAD with
 
   @UI.lineItem: [{ position: 10,label: 'Purchase Order'}]
   @UI.selectionField: [{ position: 10 }]
-  @UI.identification: [{ position: 10,label: 'Purchase Order'  }]
-  // @UI.fieldGroup: [{ position: 10, label: 'Purchase Order',qualifier: 'BasicGroup' }]
+ // @UI.identification: [{ position: 10,label: 'Purchase Order'  }]
+  @UI.fieldGroup: [{ position: 10, label: 'Purchase Order',qualifier: 'BasicGroup' }]
   @UI.dataPoint:{ title:'Purchase Order', qualifier: 'HD' }
   PoNum;
 
   @UI.lineItem: [{ position: 30,label: 'Order Type', importance: #HIGH }]
-  @UI.identification: [{ position: 30,label: 'Order Type'  }]
-  // @UI.fieldGroup: [{ position: 30, label: 'Order Type',qualifier: 'BasicGroup' }]
+ // @UI.identification: [{ position: 30,label: 'Order Type'  }]
+  @UI.fieldGroup: [{ position: 30, label: 'Order Type',qualifier: 'BasicGroup' }]
   Type;
 
   @UI.lineItem: [{ position: 40,label: 'Company Code', importance: #HIGH }]
-  @UI.identification: [{ position: 40,label: 'Company Code' }]
-  // @UI.fieldGroup: [{ position: 40, label: 'Company Code',qualifier: 'OrgGroup' }]
+  //@UI.identification: [{ position: 40,label: 'Company Code' }]
+  @UI.fieldGroup: [{ position: 40, label: 'Company Code',qualifier: 'OrgGroup' }]
   CompCode;
 
   // @UI.fieldGroup: [{ position: 50, label: 'Organization',qualifier: 'OrgGroup' }]
   @UI.lineItem: [{ position: 50,label: 'Organization', importance: #HIGH }]
-  @UI.identification: [{ position: 50,label: 'Organization'  }]
-  // @UI.fieldGroup: [{ position: 50, label: 'Organization',qualifier: 'OrgGroup' }]
+  //@UI.identification: [{ position: 50,label: 'Organization'  }]
+  @UI.fieldGroup: [{ position: 50, label: 'Organization',qualifier: 'OrgGroup' }]
   Org;
 
   @UI.lineItem: [{ position: 60, label: 'Vendor' }]
   @UI.selectionField: [{ position: 30 }]
-  @UI.identification: [{ position: 60, label: 'Vendor'  }]
-  //  @UI.fieldGroup: [{ position: 60, label: 'Vendor',qualifier: 'OrgGroup' }]
+  //@UI.identification: [{ position: 60, label: 'Vendor'  }]
+  @UI.fieldGroup: [{ position: 60, label: 'Vendor',qualifier: 'OrgGroup' }]
  // @Consumption.valueHelpDefinition: [{entity:{ name: 'ZI_VEND', element:'Vendor' }}]
   Vendor;
 
   @UI.lineItem: [{ position: 70, label: 'Plant' }]
   @UI.selectionField: [{ position: 70 }]
-  @UI.identification: [{ position: 70, label: 'Plant'  }]
-  //  @UI.fieldGroup: [{ position: 70, label: 'Plant',qualifier: 'OrgGroup' }]
+  //@UI.identification: [{ position: 70, label: 'Plant'  }]
+  @UI.fieldGroup: [{ position: 70, label: 'Plant',qualifier: 'OrgGroup' }]
   Plant;
 
-  @UI.lineItem: [{ position: 80,label: 'Status'},{ type: #FOR_ACTION, dataAction: 'Post' ,
-                                                                   label: 'Post'}]
-  @UI.identification: [{ position: 80,label: 'Purchase Status' }]
-  // @UI.fieldGroup: [{ position: 80, label: 'Purchase Status',qualifier: 'BasicGroup' }]
+  @UI.lineItem: [{ position: 80,label: 'Status'},{ type: #FOR_ACTION, dataAction: 'Change_status' ,
+                                                                   label: 'Change Status'}]
+  //@UI.identification: [{ position: 80,label: 'Purchase Status' }]
+  @UI.fieldGroup: [{ position: 80, label: 'Purchase Status',qualifier: 'BasicGroup' }]
   Status;
 
-  @UI.identification: [{ position: 90,label: 'Creation Date' }]
-  // @UI.fieldGroup: [{ position: 90, label: 'Creation Date',qualifier: 'MoreDet' }]
+  //@UI.identification: [{ position: 90,label: 'Creation Date' }]
+  @UI.fieldGroup: [{ position: 90, label: 'Creation Date',qualifier: 'MoreDet' }]
   CreatedDateTime;
 
 

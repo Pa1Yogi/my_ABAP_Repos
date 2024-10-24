@@ -3,30 +3,30 @@ unmanaged implementation in class zbp_i_po_head unique;
 
 define behavior for ZI_PO_HEAD alias PO_HD
 lock master
- //authorization master ( instance )
+//authorization master ( instance )
 //etag master <field_name>
 {
   create;
   update;
   delete;
-  field ( readonly : update  ) PoNum;
+  field ( readonly :update ) PoNum;
   field ( mandatory ) DocCat, CompCode, Org, Status, Vendor;
-  action ( features : instance ) Post result [1] $self;
-  association _PO_items { create;  }
-   mapping for ztb_po_head
-  {
-    PoNum = po_num;
-    DocCat = doc_cat;
-    Type = type;
-    CompCode = comp_code;
-    Org = org;
-    Status = status;
-    Vendor = vendor;
-    CreateBy = create_by;
-    CreatedDateTime = created_date_time;
-    ChangedDateTime = changed_date_time;
-    LocalLastChangedBy = local_last_changed_by;
-  }
+  action ( features : instance ) Change_status result [1] $self;
+  association _PO_items { create; }
+  mapping for ztb_po_head
+    {
+      PoNum              = po_num;
+      DocCat             = doc_cat;
+      Type               = type;
+      CompCode           = comp_code;
+      Org                = org;
+      Status             = status;
+      Vendor             = vendor;
+      CreateBy           = create_by;
+      CreatedDateTime    = created_date_time;
+      ChangedDateTime    = changed_date_time;
+      LocalLastChangedBy = local_last_changed_by;
+    }
 }
 
 define behavior for ZI_PO_ITMS alias PO_IT
@@ -42,16 +42,18 @@ lock dependent by _po_hd
   field ( mandatory ) ItemText, Material, Uom, Plant, StorLoc, Qty, ProductPrice, PriceUnit;
   association _po_hd;
   mapping for ztb_po_items
-  {
-   PoNum = po_num;
-   PoItem = po_item;
-   ItemText = item_text;
-   Material = Material;
-   Uom = Uom;
-   Plant = Plant;
-   StorLoc = stor_loc;
-   Qty =  Qty;
-   LocalLastChangedAt = local_last_changed_at;
-   LocalLastChangedBy = local_last_changed_by;
-  }
+    {
+      PoNum              = po_num;
+      PoItem             = po_item;
+      ItemText           = item_text;
+      Material           = Material;
+      Uom                = Uom;
+      Plant              = Plant;
+      StorLoc            = stor_loc;
+      Qty                = Qty;
+      ProductPrice       = product_price;
+      PriceUnit          = price_unit;
+      LocalLastChangedAt = local_last_changed_at;
+      LocalLastChangedBy = local_last_changed_by;
+    }
 }

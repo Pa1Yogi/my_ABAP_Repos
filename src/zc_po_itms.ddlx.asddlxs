@@ -15,10 +15,10 @@ annotate entity ZC_PO_ITEMS
   id: 'ItemID',
   purpose: #STANDARD,
   position: 10,
-  type:#IDENTIFICATION_REFERENCE,
- // type:#COLLECTION,
+  //type:#IDENTIFICATION_REFERENCE,
+  type:#COLLECTION,
   label: 'Item Information'
-   } /*,
+   },
    
    {
 
@@ -30,7 +30,7 @@ annotate entity ZC_PO_ITEMS
    type:#FIELDGROUP_REFERENCE,
    label:'Item Details'
 
-   } /*,
+   },
    
    {
   id:'Header1',
@@ -38,59 +38,67 @@ annotate entity ZC_PO_ITEMS
   type:#DATAPOINT_REFERENCE,
   targetQualifier:'HD1',
   position: 10
-   } */
+   },
+    
+     {
+  id:'Header2',
+  purpose: #HEADER,
+  type:#DATAPOINT_REFERENCE,
+  targetQualifier:'HD2',
+  position: 20
+   }
    ] 
    
-     @UI.lineItem: [{ position: 10,label: 'Purchase Order'}]
-  //   @UI.fieldGroup: [{ position: 10, label: 'Purchase Order',qualifier: 'BasicGroup' }]
-    @UI.identification: [{ position: 10,label: 'Purchase Order'  }]
-  //   @UI.dataPoint:{ title:'Purchase Order', qualifier: 'HD1' }
+    @UI.lineItem: [{ position: 10,label: 'Purchase Order'}]
+    @UI.fieldGroup: [{ position: 10, label: 'Purchase Order',qualifier: 'BasicGroup' }]
+    //@UI.identification: [{ position: 10,label: 'Purchase Order'  }]
+    @UI.dataPoint:{ title:'Purchase Order', qualifier: 'HD1' }
     PoNum;
     
      @UI.lineItem: [{ position: 20,label: 'Item Number'}]
-     @UI.identification: [{ position: 20,label: 'Item Number'  }]
-  //  @UI.fieldGroup: [{ position: 20, label: 'Item Number',qualifier: 'BasicGroup' }]
-  //  @UI.dataPoint:{ title:'Item Number', qualifier: 'HD1' }
+   //  @UI.identification: [{ position: 20,label: 'Item Number'  }]
+     @UI.fieldGroup: [{ position: 20, label: 'Item Number',qualifier: 'BasicGroup' }]
+     @UI.dataPoint:{ title:'Item Number', qualifier: 'HD2' }
     PoItem;
     
     @UI.lineItem: [{ position: 30,label: 'Short text'}]
-     @UI.identification: [{ position: 30,label: 'Short text'  }]
-  //  @UI.fieldGroup: [{ position: 30, label: 'Short text',qualifier: 'BasicGroup' }]
+   //  @UI.identification: [{ position: 30,label: 'Short text'  }]
+    @UI.fieldGroup: [{ position: 30, label: 'Short text',qualifier: 'BasicGroup' }]
     ItemText;
     
     @UI.lineItem: [{ position: 40,label: 'Material'}]
-     @UI.identification: [{ position: 40,label: 'Material'  }]
- //   @UI.fieldGroup: [{ position: 40, label: 'Material',qualifier: 'BasicGroup' }]
+   //  @UI.identification: [{ position: 40,label: 'Material'  }]
+   @UI.fieldGroup: [{ position: 40, label: 'Material',qualifier: 'BasicGroup' }]
     Material;
     
     @UI.lineItem: [{ position: 50,label: 'Plant'}]
-     @UI.identification: [{ position: 50,label: 'Plant'  }]
- //   @UI.fieldGroup: [{ position: 50, label: 'Plant',qualifier: 'BasicGroup' }]
+   //  @UI.identification: [{ position: 50,label: 'Plant'  }]
+   @UI.fieldGroup: [{ position: 50, label: 'Plant',qualifier: 'BasicGroup' }]
     Plant;
     
     @UI.lineItem: [{ position: 60,label: 'Material Group'}]
-     @UI.identification: [{ position: 60,label: 'Purchase Order Item'  }]
-   // @UI.fieldGroup: [{ position: 60, label: 'Stroage Location',qualifier: 'BasicGroup' }]
+    // @UI.identification: [{ position: 60,label: 'Purchase Order Item'  }]
+    @UI.fieldGroup: [{ position: 60, label: 'Stroage Location',qualifier: 'BasicGroup' }]
     StorLoc;
     
     @UI.lineItem: [{ position: 70,label: 'Order Quantity'}]
-     @UI.identification: [{ position: 70,label: 'Order Quantity'  }]
-  //  @UI.fieldGroup: [{ position: 70, label: 'Order Quantity',qualifier: 'BasicGroup' }]
+  //   @UI.identification: [{ position: 70,label: 'Order Quantity'  }]
+    @UI.fieldGroup: [{ position: 70, label: 'Order Quantity',qualifier: 'BasicGroup' }]
     Qty;
     
     @UI.lineItem: [{ position: 80,label: 'Order Unit'}]
-     @UI.identification: [{ position: 80,label: 'Order Unit'  }]
-   // @UI.fieldGroup: [{ position: 80, label: 'Order Unit',qualifier: 'BasicGroup' }]
+  //   @UI.identification: [{ position: 80,label: 'Order Unit'  }]
+    @UI.fieldGroup: [{ position: 80, label: 'Order Unit',qualifier: 'BasicGroup' }]
     Uom;
     
-    @UI.lineItem: [{ position: 90,label: 'Product Price'}] 
-     @UI.identification: [{ position: 90,label: 'Product Price'  }]
-  //  @UI.fieldGroup: [{ position: 90, label: 'Product Price',qualifier: 'BasicGroup' }]
+     @UI.lineItem: [{ position: 90,label: 'Product Price'}] 
+  //   @UI.identification: [{ position: 90,label: 'Product Price'  }]
+    @UI.fieldGroup: [{ position: 90, label: 'Product Price',qualifier: 'BasicGroup' }]
     ProductPrice;
     
-    @UI.lineItem: [{ position: 100,label: 'Price Unit'}]  
-     @UI.identification: [{ position: 100,label: 'Price Unit'  }]
-  //  @UI.fieldGroup: [{ position: 100, label: 'Price Unit',qualifier: 'BasicGroup' }]
+     @UI.lineItem: [{ position: 100,label: 'Price Unit'}]  
+  //   @UI.identification: [{ position: 100,label: 'Price Unit'  }]
+   @UI.fieldGroup: [{ position: 100, label: 'Price Unit',qualifier: 'BasicGroup' }]
     PriceUnit;
  
     

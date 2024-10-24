@@ -17,7 +17,8 @@
         value: 'PoNum'
     }
 } }
-define root view entity ZC_PO_HEAD as  projection on ZI_PO_HEAD
+define root view entity ZC_PO_HEAD provider contract transactional_query
+ as  projection on ZI_PO_HEAD
 {   
     @Search.defaultSearchElement: true
     key PoNum,
@@ -31,7 +32,7 @@ define root view entity ZC_PO_HEAD as  projection on ZI_PO_HEAD
           entity: {
               name: 'ZI_VEND',
               element: 'Vendor'
-          }}]
+          }}] 
     Vendor,
     Plant,
     CreateBy,

@@ -25,62 +25,168 @@ CLASS lhc_PO_HD DEFINITION INHERITING FROM cl_abap_behavior_handler.
     METHODS cba_Po_items FOR MODIFY
       IMPORTING entities_cba FOR CREATE po_hd\_Po_items.
 
-    METHODS Post FOR MODIFY
-      IMPORTING keys FOR ACTION po_hd~Post RESULT result.
+    METHODS Change_status FOR MODIFY
+      IMPORTING keys FOR ACTION po_hd~Change_status RESULT result.
 
 ENDCLASS.
 
 CLASS lhc_PO_HD IMPLEMENTATION.
 
   METHOD get_instance_features.
+
+    READ ENTITIES OF zi_po_head IN LOCAL MODE
+     ENTITY po_hd
+        FIELDS (  PoNum Status )
+        WITH CORRESPONDING #( keys )
+      RESULT DATA(lt_po_result)
+      FAILED failed.
+
+    result =
+      VALUE #( FOR ls_po IN lt_po_result
+        ( %key = ls_po-%key
+          %features-%action-Change_status = COND #( WHEN ls_po-status = 'B'
+                                                        THEN if_abap_behv=>fc-o-disabled
+                                                        ELSE if_abap_behv=>fc-o-enabled )
+         ) ).
+
   ENDMETHOD.
 
   METHOD create.
 
-   DATA :  ls_po_hd TYPE ztb_po_head,
-           lt_msg    TYPE /dmo/t_message.
+    DATA :  ls_po_hd TYPE ztb_po_head.
 
-    READ TABLE entities ASSIGNING FIELD-SYMBOL(<lfs_po_hd>) index 1.
-    if sy-subrc eq 0.
-     ls_po_hd = CORRESPONDING #( <lfs_po_hd> MAPPING FROM ENTITY USING CONTROL ).
-    endif.
 
-    INSERT ztb_po_head from @ls_po_hd.
+    READ TABLE entities ASSIGNING FIELD-SYMBOL(<lfs_po_hd>) INDEX 1.
+    IF sy-subrc EQ 0.
+      ls_po_hd = CORRESPONDING #( <lfs_po_hd> MAPPING FROM ENTITY USING CONTROL ).
+    ENDIF.
+
+    INSERT ztb_po_head FROM @ls_po_hd.
     IF sy-subrc IS INITIAL.
-        mapped-po_hd = VALUE #( BASE mapped-po_hd
-                                ( %cid = <lfs_po_hd>-%cid
-                                  PoNum = ls_po_hd-po_num
-                                ) ).
-      ELSE.
-        LOOP AT lt_msg INTO DATA(ls_msg).
-          APPEND VALUE #( %cid = <lfs_po_hd>-%cid
-              PoNum = <lfs_po_hd>-PoNum )
-              TO failed-po_hd.
+      mapped-po_hd = VALUE #( BASE mapped-po_hd
+                              ( %cid = <lfs_po_hd>-%cid
+                                PoNum = ls_po_hd-po_num
+                              ) ).
+    ELSE.
 
-          APPEND VALUE #( %msg = new_message( id       = ls_msg-msgid
-                                              number   = ls_msg-msgno
-                                              v1       = ls_msg-msgv1
-                                              v2       = ls_msg-msgv2
-                                              v3       = ls_msg-msgv3
-                                              v4       = ls_msg-msgv4
-                                              severity = if_abap_behv_message=>severity-error )
-                          %key-PoNum = <lfs_po_hd>-PoNum
-                          %cid =  <lfs_po_hd>-%cid
-                          %create = 'X'
-                          PoNum = <lfs_po_hd>-PoNum )
-                          TO reported-po_hd.
-        ENDLOOP.
-      ENDIF.
+      APPEND VALUE #( %cid = <lfs_po_hd>-%cid
+          PoNum = <lfs_po_hd>-PoNum )
+          TO failed-po_hd.
+
+      APPEND VALUE #( %msg = new_message( id       = '00'
+                                          number   = '001'
+                                          v1       = 'Invalid Details'
+                                          severity = if_abap_behv_message=>severity-error )
+                      %key-PoNum = <lfs_po_hd>-PoNum
+                      %cid =  <lfs_po_hd>-%cid
+                      %create = 'X'
+                      PoNum = <lfs_po_hd>-PoNum )
+                      TO reported-po_hd.
+
+    ENDIF.
 
   ENDMETHOD.
 
   METHOD update.
+
+    DATA : ls_po    TYPE zi_po_head,
+           ls_po_hd TYPE ztb_po_head.
+
+
+    READ TABLE entities ASSIGNING FIELD-SYMBOL(<lfs_po_hd>) INDEX 1.
+    IF sy-subrc EQ 0.
+      SELECT SINGLE * FROM ztb_po_head WHERE po_num EQ @<lfs_po_hd>-PoNum INTO @ls_po_hd.
+*     ls_po_hd = CORRESPONDING #( <lfs_po_hd> MAPPING FROM ENTITY USING CONTROL ).
+      IF <lfs_po_hd>-CompCode IS NOT INITIAL.
+     ls_po_hd-comp_code = <lfs_po_hd>-CompCode.
+      ENDIF.
+      IF <lfs_po_hd>-DocCat IS NOT INITIAL.
+        ls_po_hd-doc_cat = <lfs_po_hd>-DocCat.
+      ENDIF.
+*
+      IF <lfs_po_hd>-Org IS NOT INITIAL.
+        ls_po_hd-org =  <lfs_po_hd>-Org.
+      ENDIF.
+**
+      IF <lfs_po_hd>-Plant IS NOT INITIAL.
+        ls_po_hd-plant = <lfs_po_hd>-Plant.
+      ENDIF.
+**
+      IF <lfs_po_hd>-PoNum IS NOT INITIAL.
+        ls_po_hd-po_num = <lfs_po_hd>-PoNum.
+      ENDIF.
+*
+      IF <lfs_po_hd>-Status IS NOT INITIAL.
+        ls_po_hd-status = <lfs_po_hd>-Status.
+      ENDIF.
+*
+      IF <lfs_po_hd>-Type IS NOT INITIAL.
+        ls_po_hd-type = <lfs_po_hd>-Type.
+      ENDIF.
+*
+      IF  <lfs_po_hd>-Vendor IS NOT INITIAL.
+        ls_po_hd-vendor = <lfs_po_hd>-Vendor.
+      ENDIF.
+*
+    ENDIF.
+
+    UPDATE ztb_po_head FROM @ls_po_hd .
+    IF sy-subrc IS INITIAL.
+      mapped-po_hd = VALUE #( BASE mapped-po_hd
+                              ( %cid = <lfs_po_hd>-%cid_ref
+                                PoNum = ls_po_hd-po_num
+                              ) ).
+    ELSE.
+
+      APPEND VALUE #( %cid = <lfs_po_hd>-%cid_ref
+          PoNum = <lfs_po_hd>-PoNum )
+          TO failed-po_hd.
+
+      APPEND VALUE #( %msg = new_message( id       = '00'
+                                          number   = '001'
+                                          v1       = 'Invalid Details'
+                                          severity = if_abap_behv_message=>severity-error )
+                      %key-PoNum = <lfs_po_hd>-PoNum
+                      %cid =  <lfs_po_hd>-%cid_ref
+                      %update = 'X'
+                      PoNum = <lfs_po_hd>-PoNum )
+                      TO reported-po_hd.
+
+    ENDIF.
+
   ENDMETHOD.
 
   METHOD delete.
+
+    READ TABLE keys ASSIGNING FIELD-SYMBOL(<lfs_keys>) INDEX 1.
+    IF sy-subrc EQ 0.
+      DELETE FROM ztb_po_head WHERE po_num EQ @<lfs_keys>-PoNum.
+      IF sy-subrc NE 0.
+        APPEND VALUE #( %cid = <lfs_keys>-%cid_ref
+          PoNum = <lfs_keys>-PoNum )
+          TO failed-po_hd.
+
+        APPEND VALUE #( %msg = new_message( id       = '00'
+                                            number   = '001'
+                                            v1       = 'Invalid Details'
+                                            severity = if_abap_behv_message=>severity-error )
+                        %key-PoNum = <lfs_keys>-PoNum
+                        %cid =  <lfs_keys>-%cid_ref
+                        %delete = 'X'
+                        PoNum = <lfs_keys>-PoNum )
+                        TO reported-po_hd.
+      ENDIF.
+    ENDIF.
+
   ENDMETHOD.
 
   METHOD read.
+
+    SELECT * FROM ztb_po_head
+         FOR ALL ENTRIES IN @keys
+         WHERE po_num = @keys-PoNum
+         INTO CORRESPONDING FIELDS OF TABLE @result.
+
   ENDMETHOD.
 
   METHOD lock.
@@ -90,76 +196,80 @@ CLASS lhc_PO_HD IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD cba_Po_items.
-   DATA :  ls_po_items TYPE ztb_po_items,
-           lt_msg     TYPE /dmo/t_message,
-         lt_msg_b   TYPE /dmo/t_message.
+    DATA : ls_po_items TYPE ztb_po_items.
 
-    READ TABLE entities_cba ASSIGNING FIELD-SYMBOL(<lfs_po_items>) index 1.
-    if sy-subrc eq 0.
-     DATA(lv_po) = <lfs_po_items>-PoNum.
-    endif.
+    READ TABLE entities_cba ASSIGNING FIELD-SYMBOL(<lfs_po_items>) INDEX 1.
+    IF sy-subrc EQ 0.
+      DATA(lv_po) = <lfs_po_items>-PoNum.
+    ENDIF.
 
-    READ TABLE <lfs_po_items>-%target ASSIGNING FIELD-SYMBOL(<lfs_items>) index 1.
-    if sy-subrc eq 0.
-     DATA(ls_items) = CORRESPONDING ztb_po_items( <lfs_items> MAPPING FROM ENTITY USING CONTROL ).
-    endif.
+    READ TABLE <lfs_po_items>-%target ASSIGNING FIELD-SYMBOL(<lfs_items>) INDEX 1.
+    IF sy-subrc EQ 0.
+      DATA(ls_items) = CORRESPONDING ztb_po_items( <lfs_items> MAPPING FROM ENTITY USING CONTROL ).
+    ENDIF.
 
-    INSERT ztb_po_items from @ls_items.
+    INSERT ztb_po_items FROM @ls_items.
     IF sy-subrc IS INITIAL.
 
-    "Pass data back to UI
-        INSERT VALUE #( %cid = <lfs_po_items>-%cid_ref
-                        PoNum = lv_po
-                        PoItem = ls_items-po_item
-                      ) INTO  TABLE mapped-po_it.
+
+      INSERT VALUE #( %cid = <lfs_po_items>-%cid_ref
+                      PoNum = lv_po
+                      PoItem = ls_items-po_item
+                    ) INTO  TABLE mapped-po_it.
+
+    ELSE.
+      APPEND VALUE #( %cid      = <lfs_po_items>-%cid_ref
+                       PoNum  = lv_po
+                       PoItem = ls_items-po_item
+                     ) TO failed-po_it.
+
+      APPEND VALUE #( %msg = new_message( id       = '00'
+                                          number   = '001'
+                                          v1       = 'Invalid Details'
+                                          severity = if_abap_behv_message=>severity-error )
+                      %key-PoNum = lv_po
+                      %key-PoItem = ls_items-po_item
+                      %cid = <lfs_po_items>-%cid_ref
+                      PoNum = lv_po
+                      PoItem = ls_items-po_item
+                     ) TO reported-po_it.
 
 
-     LOOP AT lt_msg_b INTO DATA(ls_msg) WHERE msgty CA 'EA'.
-          APPEND VALUE #( %cid      = <lfs_po_items>-%cid_ref
-                          PoNum  = lv_po
-                          PoItem = ls_items-po_item
-                        ) TO failed-po_it.
-          APPEND VALUE #( %msg = new_message( id       = ls_msg-msgid
-                                              number   = ls_msg-msgno
-                                              v1       = ls_msg-msgv1
-                                              v2       = ls_msg-msgv2
-                                              v3       = ls_msg-msgv3
-                                              v4       = ls_msg-msgv4
-                                              severity = if_abap_behv_message=>severity-error )
-                          %key-PoNum = lv_po
-                          %key-PoItem = ls_items-po_item
-                          %cid = <lfs_po_items>-%cid_ref
-                          PoNum = lv_po
-                          PoItem = ls_items-po_item
-                         ) TO reported-po_it.
-        ENDLOOP.
-
-      ELSE.
-        LOOP AT lt_msg INTO DATA(ls_msg1).
-          APPEND VALUE #( %cid = <lfs_po_items>-%cid_ref
-              PoNum = <lfs_po_items>-PoNum )
-              TO failed-po_hd.
-
-          APPEND VALUE #( %msg = new_message( id       = ls_msg1-msgid
-                                              number   = ls_msg1-msgno
-                                              v1       = ls_msg1-msgv1
-                                              v2       = ls_msg1-msgv2
-                                              v3       = ls_msg1-msgv3
-                                              v4       = ls_msg1-msgv4
-                                              severity = if_abap_behv_message=>severity-error )
-                          %key-PoNum = <lfs_po_items>-PoNum
-                        "  %key-PoItem = <lfs_po_items>-PoItem
-                          %cid =  <lfs_po_items>-%cid_ref
-                          %create = 'X'
-                          PoNum = <lfs_po_items>-PoNum )
-                         " PoItem = <lfs_po_items>-PoItem )
-                          TO reported-po_hd.
-        ENDLOOP.
-      ENDIF.
+    ENDIF.
 
   ENDMETHOD.
 
-  METHOD Post.
+  METHOD Change_status.
+
+    DATA :  ls_po_hd TYPE ztb_po_head.
+
+
+    MODIFY ENTITIES OF zi_po_head IN LOCAL MODE
+            ENTITY po_hd
+               UPDATE FROM VALUE #( FOR key IN keys
+               ( PoNum = key-PoNum
+                 Status = 'B'
+                 %control-Status = if_abap_behv=>mk-on ) )
+               FAILED failed
+               REPORTED reported.
+
+
+    READ ENTITIES OF zi_po_head IN LOCAL MODE
+      ENTITY po_hd
+      ALL FIELDS WITH
+      CORRESPONDING #( keys )
+      RESULT DATA(pos).
+
+    result = VALUE #( FOR po IN pos
+             ( %tky   = po-%tky
+               %param = po ) ).
+
+*    READ TABLE keys INTO DATA(key) INDEX 1.
+*    SELECT SINGLE * FROM ztb_po_head WHERE po_num = @key-PoNum INTO @ls_po_hd.
+*    ls_po_hd-status = 'B'.
+*
+*    UPDATE ztb_po_head FROM @ls_po_hd.
+
   ENDMETHOD.
 
 ENDCLASS.
