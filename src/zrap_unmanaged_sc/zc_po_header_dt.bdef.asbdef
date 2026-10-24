@@ -1,0 +1,28 @@
+projection;
+strict ( 2 );
+//use draft;
+
+define behavior for ZC_PO_HEADER_DT //alias <alias_name>
+{
+  use create;
+  use update;
+  use delete;
+
+  use action Change_status;
+  /* use action Activate;
+   use action Discard;
+   use action Edit;
+   use action Resume;
+   use action Prepare; */
+  use action Selected;
+
+  use association _PO_items { create; }
+}
+
+define behavior for ZC_PO_ITEMS_DT //alias <alias_name>
+{
+  use update;
+  use delete;
+
+  use association _po_hd;
+}

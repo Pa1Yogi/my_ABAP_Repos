@@ -1,0 +1,5 @@
+CLASS zbp_i_po_head_dts_m DEFINITION PUBLIC ABSTRACT FINAL FOR BEHAVIOR OF zi_po_head_dts_m.
+ENDCLASS.
+
+CLASS zbp_i_po_head_dts_m IMPLEMENTATION.
+ENDCLASS.

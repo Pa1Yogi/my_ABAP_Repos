@@ -1,0 +1,73 @@
+managed implementation in class zbp_i_po_hd_dt unique;
+strict ( 2 );
+
+define behavior for ZI_PO_HD_DT //alias <alias_name>
+persistent table ztb_pohead_dt
+lock master
+authorization master ( instance )
+etag master LastChangedAt
+{
+  create ( authorization : global );
+  update;
+  delete;
+  //  field ( readonly ) Ponum;
+
+  // administrative fields: read only
+  field ( readonly ) LastChangedAt, LastChangedBy, CreatedAt, Createdby;
+
+  // mandatory fields that are required to create a travel
+  field ( mandatory ) Org, Doccat, Compcode, Plant, Status, Type, Vendor;
+
+  // Fields that are mandatory for create but should be read-only afterwards
+  field ( mandatory : create, readonly : update ) Ponum;
+
+  // instance actions
+  // dynamic action control
+  action ( features : instance ) Selected result [1] $self;
+  action ( features : instance ) UnSelected result [1] $self;
+
+  // instance action for copying po instances
+  action createPOByTemplate result [1] $self;
+
+  // dynamic operation control
+  association _Items { create ( features : instance ); }
+
+  //Validations
+  validation checkType on save { field Type; }
+  validation checkPlant on save { field Plant; }
+
+  //  validation checkType on save { field Type; create; update; }
+  //  validation checkPlant on save { field Plant; create; update; }
+
+  //Determinations
+  //  determination setInitialValues on modify { create; }
+  //
+  //  determination updateOrg on save { field DocCat; }
+
+  determination updateOrg1 on modify { field DocCat; }
+
+  mapping for zi_po_hd_dt corresponding;
+}
+
+define behavior for ZI_PO_ITS_DT //alias <alias_name>
+persistent table ztb_poitems_dt
+lock dependent by _POHd
+authorization dependent by _POHd
+etag master LastChangedAt
+{
+  update;
+  delete;
+  //  field ( readonly ) Ponum, Poitem;
+
+  // static field control
+  field ( mandatory ) Material, Itemtext, Plant, Qty, Storloc, Uom, Priceunit;
+  field ( readonly ) Ponum;
+  // Fields that are mandatory for create but should be read-only afterwards
+  field ( mandatory : create, readonly : update ) Poitem;
+
+  association _POHd;
+
+  validation validateStorLoc on save { field Storloc; }
+
+  mapping for zi_po_its_dt corresponding;
+}

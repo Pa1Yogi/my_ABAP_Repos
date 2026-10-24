@@ -1,0 +1,158 @@
+managed implementation in class zbp_r_po_head_dt_d unique;
+strict ( 2 );
+with draft;
+
+define behavior for ZR_PO_HEAD_DT_D alias Header
+persistent table ztb_a_po_head_d
+draft table ztb_d_po_head_d
+lock master
+total etag LastChangedAt
+authorization master ( global, instance ) //instance )
+etag master LocalLastChangedAt
+//early numbering
+late numbering
+{
+  // standard operations for po entity
+  create ( features : global, authorization : global, precheck );
+  update ( features : global, precheck );
+  delete ( features : global );
+
+  // Semantic Key field, which is readonly for the consumer, value is assigned in early numbering / late numbering
+  // with static field control
+  field ( readonly ) PoNum, PoUuid;
+
+  // static field control
+  //   Fields that are mandatory for create but should be read-only
+  //  field ( mandatory : create, readonly : update ) Ponum;
+  //  field ( numbering : managed, readonly ) PoUuid;
+  //  field ( readonly ) LocalLastChangedAt, LastChangedAt;
+
+  // administrative fields: read only with static field control
+  field ( readonly ) LocalCreatedBy, LocalCreatedAt, LocalLastChangedBy, LocalLastChangedAt, LastChangedAt;
+
+  // mandatory fields that are required to create a po with static field control
+  field ( mandatory ) Type, Vendor, Org, Doccat, Compcode;
+
+  //Instance Factory Action
+  factory action CopyPO [1];
+
+  //Static Factory Action
+  static factory action ( features : global ) CreatePO [1];
+
+  //Instance Non-Factory Actions with dynamic action control
+  action ( features : instance, authorization : update ) Approved result [1] $self;
+  action ( features : instance, authorization : update ) Selected parameter ZA_PO_STATUS result [1] $self;
+
+  //Static Non-Factory Action
+  static action ( features : global ) ChangePOStatus;
+
+  //Validations
+  //  validation checkType on save { field Type; }
+  // validation checkType on save { create; }
+  //  validation checkType on save { create; update; }
+  //  validation checkType on save { create; update; field Type; }
+  validation checkType on save { create; update; field Type; }
+
+  //Determinations
+  determination updateOrg on save { field DocCat; }
+
+  determination updateOrg1 on modify { field DocCat; }
+
+  determination updateVendor on modify { create; field Type; }
+
+  determination setInitialValues on save { create; }
+
+  determination setInitialValues1 on modify { create; }
+
+  determination updateStatus on modify { field Vendor; }
+
+  determination updateOrg2 on save { field CompCode; }
+
+  determine action ( authorization : update ) validatePOType { validation checkType; }
+
+  //Draft Determine Action
+  draft determine action Prepare
+  {
+    determination updateOrg2;
+    validation checkType;
+  }
+
+  draft action Resume with additional implementation;
+  draft action Edit;
+  //  draft determine action Prepare;
+  draft action Activate optimized;
+  draft action Discard;
+
+  // create item by association with dynamic operation control
+  association _Items { create ( features : instance, authorization : update ); with draft; }
+
+  // mapping entity's field types with table field types
+  mapping for ztb_a_po_head_d corresponding
+    {
+      PoNum              = po_num;
+      PoUuid             = po_uuid;
+      CompCode           = comp_code;
+      Type               = type;
+      DocCat             = doc_cat;
+      Org                = org;
+      Status             = status;
+      Vendor             = vendor;
+      Approved           = approved;
+      LocalCreatedBy     = local_created_by;
+      LocalCreatedAt     = local_created_at;
+      LocalLastChangedAt = local_last_changed_at;
+      LocalLastChangedBy = local_last_changed_by;
+      LastChangedAt      = last_changed_at;
+    }
+}
+
+define behavior for ZR_PO_ITEMS_DT_D alias Item
+persistent table ztb_a_po_items_d
+draft table ztb_d_po_items_d
+lock dependent by _Header
+authorization dependent by _Header
+etag dependent by _Header //LocalLastChangedAt
+//early numbering
+late numbering
+{
+  // standard operations for item entity
+  update ( features : global );
+  delete;
+
+  // static field control
+  field ( readonly ) PoNum, PoItem, PoItemUuid, PoUuid;
+  //  field ( readonly ) Ponum, PoUuid;
+  // Fields that are mandatory for create but should be read-only afterwards
+  //  field ( mandatory : create, readonly : update ) Poitem;
+  //  field ( numbering : managed, readonly ) PoItemUuid;
+
+  // administrative fields: read only with static field control
+  //  field ( readonly ) LocalLastChangedAt;
+
+  // static field control
+  field ( mandatory ) Material, Itemtext, Plant, Qty, Uom, Priceunit;
+
+  //Validations
+  validation validateStorLoc on save { field Storloc; }
+  //  validation validateStorLoc on save { create; }
+
+  association _Header { with draft; }
+
+  // mapping entity's field types with table field types
+  mapping for ztb_a_po_items_d corresponding
+    {
+      PoNum        = po_num;
+      PoItem       = po_item;
+      PoItemUuid   = po_item_uuid;
+      PoUuid       = parent_uuid;
+      Material     = material;
+      ItemText     = item_text;
+      Plant        = plant;
+      Storloc      = storloc;
+      Qty          = qty;
+      Uom          = uom;
+      ProductPrice = product_price;
+      PriceUnit    = price_unit;
+      //      LocalLastChangedAt = local_last_changed_at;
+    }
+}

@@ -1,0 +1,5 @@
+CLASS zbp_r_po_head_dt_d DEFINITION PUBLIC ABSTRACT FINAL FOR BEHAVIOR OF zr_po_head_dt_d.
+ENDCLASS.
+
+CLASS zbp_r_po_head_dt_d IMPLEMENTATION.
+ENDCLASS.

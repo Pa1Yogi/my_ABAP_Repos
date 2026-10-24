@@ -1,0 +1,11 @@
+abstract;
+strict ( 2 );
+with hierarchy;
+define behavior for ZA_PO_HD //alias <alias_name>
+{
+  association _HdtoItm;
+}
+
+define behavior for ZA_PO_ITMS //alias <alias_name>
+{
+}

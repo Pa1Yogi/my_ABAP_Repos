@@ -1,0 +1,72 @@
+managed implementation in class zbp_i_po_head_m unique;
+strict ( 2 );
+
+define behavior for ZI_PO_HEAD_M alias Header
+persistent table ztb_po_head_m
+lock master
+authorization master ( instance )
+//etag master <field_name>
+{
+  create ( authorization : global );
+  update;
+  delete;
+
+  //  field ( readonly ) PoNum;
+
+  // Fields that are mandatory for create but should be read-only
+  field ( mandatory : create, readonly : update ) Ponum;
+
+  association _Items { create; }
+
+  mapping for ztb_po_head_m corresponding
+    {
+      PoNum         = po_num;
+      CompCode      = comp_code;
+      Type          = type;
+      DocCat        = doc_cat;
+      Org           = org;
+      Status        = status;
+      Vendor        = vendor;
+      Approved      = approved;
+      CreatedBy     = created_by;
+      CreatedAt     = created_at;
+      LastChangedAt = last_changed_at;
+      LastChangedBy = last_changed_by;
+    }
+
+}
+
+define behavior for ZI_PO_ITEMS_M alias Item
+persistent table ztb_po_items_m
+lock dependent by _Header
+authorization dependent by _Header
+//etag master <field_name>
+{
+
+  update;
+  delete;
+
+  //  field ( readonly ) PoNum, PoItem;
+  field ( readonly ) Ponum;
+
+  // Fields that are mandatory for create but should be read-only
+  field ( mandatory : create, readonly : update ) Poitem;
+
+  association _Header;
+
+  mapping for ztb_po_items_m corresponding
+    {
+      PoNum         = po_num;
+      PoItem        = po_item;
+      Material      = material;
+      ItemText      = item_text;
+      Plant         = plant;
+      Storloc       = storloc;
+      Qty           = qty;
+      Uom           = uom;
+      ProductPrice  = product_price;
+      PriceUnit     = price_unit;
+      LastChangedAt = last_changed_at;
+    }
+
+}

@@ -1,0 +1,5 @@
+@EndUserText.label: 'Service Definition for PO'
+define service ZUI_PO_DTS_M {
+  expose ZC_PO_HEAD_DTS_M  as Header;
+  expose ZC_PO_ITEMS_DTS_M as Items;
+}

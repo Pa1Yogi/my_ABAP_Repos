@@ -1,0 +1,5 @@
+@EndUserText.label: 'Service Definition for PO'
+define service ZUI_PO_HS1 {
+  expose ZI_PO_HD_DT;
+  expose ZI_PO_ITS_DT;
+}

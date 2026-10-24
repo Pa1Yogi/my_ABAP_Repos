@@ -1,0 +1,5 @@
+@EndUserText.label: 'Service Definition for PO'
+define service ZUI_PO_M {
+  expose ZC_PO_HEAD_M  as HD;
+  expose ZC_PO_ITEMS_M as Items;
+}

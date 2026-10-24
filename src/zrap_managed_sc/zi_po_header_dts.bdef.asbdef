@@ -1,0 +1,114 @@
+managed implementation in class zbp_i_po_header_dts unique;
+strict ( 2 );
+with draft;
+define behavior for ZI_PO_HEADER_DTS //alias <alias_name>
+persistent table ztb_pohead
+draft table zdrt_po_headers
+lock master
+total etag ChangedDateTime
+authorization master ( instance )
+etag master LocalLastChangedAt
+//early numbering
+late numbering
+{
+  create ( authorization : global );
+  update;
+  delete;
+  //  field ( readonly ) PoNum;
+  field ( mandatory : create, readonly : update ) PoNum;
+  //Instance Non-Factory Actions
+  action ( features : instance ) Selected result [1] $self;
+  action POStatus parameter za_po_hd_status result [1] $self;
+  //Static Non-Factory Action
+  static action ChangePOStatus;
+  //Instance Factory Action
+  factory action CopyPO [1];
+  //Static Factory Action
+  static factory action CreatePO [1];
+
+  static action DeepAction deep parameter ZA_PO_HD deep result [1..*] ZA_PO_HD;
+
+  //Determinations
+  determination setInitialValues on modify { create; }
+
+  determination updateOrg on save { field DocCat; }
+
+  determination updateOrg1 on modify { field DocCat; }
+
+  side effects { field DocCat affects field Org; }
+
+  determination updateOrg2 on save { field DocCat; }
+
+  draft determine action Prepare
+  {
+    validation checkPlant;
+    determination updateOrg2;
+    validation checkType;
+  }
+
+  //Validations
+  validation checkType on save { create; field Type; }
+  validation checkPlant on save { field Plant; create; update; }
+
+  //  determine action validatefields{ validation checkType; }
+
+  draft action Activate;
+  draft action Edit;
+  draft action Resume;
+  draft action Discard;
+  //draft determine action Prepare;
+
+  association _PO_items { create; with draft; }
+
+  mapping for ztb_pohead corresponding
+    {
+      PoNum              = po_num;
+      DocCat             = doc_cat;
+      Type               = type;
+      CompCode           = comp_code;
+      Org                = org;
+      Status             = status;
+      Vendor             = vendor;
+      Plant              = plant;
+      CreatedBy          = created_by;
+      CreatedDateTime    = created_date_time;
+      ChangedDateTime    = changed_date_time;
+      LocalLastChangedBy = local_last_changed_by;
+    }
+
+}
+
+define behavior for ZI_PO_ITEMS_DTS //alias <alias_name>
+persistent table ztb_poitems
+draft table zdrt_pos_items
+lock dependent by _po_hd
+authorization dependent by _po_hd
+etag master LocalLastChangedAt
+//early numbering
+late numbering
+{
+  update;
+  delete;
+  field ( readonly ) PoNum;
+  //  field ( readonly : update ) PoNum;
+  field ( mandatory : create, readonly : update ) PoItem;
+
+  association _po_hd { with draft; }
+
+  mapping for ztb_poitems corresponding
+    {
+      PoNum              = po_num;
+      PoItem             = po_item;
+      ItemText           = item_text;
+      Material           = Material;
+      Uom                = Uom;
+      Plant              = Plant;
+      StorLoc            = stor_loc;
+      Qty                = Qty;
+      ProductPrice       = product_price;
+      PriceUnit          = price_unit;
+      LocalLastChangedAt = local_last_changed_at;
+      LocalLastChangedBy = local_last_changed_by;
+    }
+
+}

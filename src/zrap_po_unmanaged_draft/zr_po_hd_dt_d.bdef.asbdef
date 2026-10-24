@@ -1,0 +1,91 @@
+unmanaged implementation in class zbp_r_po_hd_dt_d unique;
+strict ( 2 );
+with draft;
+
+define behavior for ZR_PO_HD_DT_D alias Header
+draft table ztb_d_po_hd_d
+//late numbering
+lock master
+total etag LastChangedAt
+authorization master ( instance )
+//etag master <field_name>
+{
+  create ( authorization : global );
+  update;
+  delete;
+  //  field ( readonly ) PoNum, PoUuid;
+
+  // Fields that are mandatory for create but should be read-only
+  field ( mandatory : create, readonly : update ) Ponum;
+
+  field ( numbering : managed, readonly ) PoUuid;
+
+  field ( readonly ) LocalLastChangedAt, LastChangedAt;
+
+  draft action Resume;
+  draft action Edit;
+  draft action Activate optimized;
+  draft action Discard;
+  draft determine action Prepare;
+
+  association _Items { create; with draft; }
+
+  mapping for ztb_a_po_hd_d corresponding
+    {
+      PoNum              = po_num;
+      PoUuid             = po_uuid;
+      CompCode           = comp_code;
+      Type               = type;
+      DocCat             = doc_cat;
+      Org                = org;
+      Status             = status;
+      Vendor             = vendor;
+      Approved           = approved;
+      LocalCreatedBy     = local_created_by;
+      LocalCreatedAt     = local_created_at;
+      LocalLastChangedAt = local_last_changed_at;
+      LocalLastChangedBy = local_last_changed_by;
+      LastChangedAt      = last_changed_at;
+    }
+}
+
+define behavior for ZR_PO_IS_DT_D alias Item
+draft table ztb_d_po_its_d
+//late numbering
+lock dependent by _Header
+authorization dependent by _Header
+//etag master <field_name>
+{
+  update;
+  delete;
+  //  field ( readonly ) PoNum, PoItem, PoItemUuid;
+
+  field ( readonly ) Ponum, PoUuid;
+
+  // Fields that are mandatory for create but should be read-only
+  field ( mandatory : create, readonly : update ) Poitem;
+
+  field ( numbering : managed, readonly ) PoItemUuid;
+
+  field ( readonly ) LocalLastChangedAt;
+
+  association _Header { with draft; }
+
+  mapping for ztb_a_po_its_d corresponding
+    {
+      PoNum              = po_num;
+      PoItem             = po_item;
+      PoItemUuid         = po_item_uuid;
+      PoUuid             = parent_uuid;
+      Material           = material;
+      ItemText           = item_text;
+      Plant              = plant;
+      Storloc            = storloc;
+      Qty                = qty;
+      Uom                = uom;
+      ProductPrice       = product_price;
+      PriceUnit          = price_unit;
+      LocalLastChangedAt = local_last_changed_at;
+    }
+
+}

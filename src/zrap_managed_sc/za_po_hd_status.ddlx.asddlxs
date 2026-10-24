@@ -1,0 +1,8 @@
+@Metadata.layer: #CORE
+annotate entity za_po_hd_status
+    with 
+{
+    @EndUserText.label: 'Set PO Status'
+  Po_Status;
+    
+}

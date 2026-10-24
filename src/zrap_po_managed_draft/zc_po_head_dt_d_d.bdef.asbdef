@@ -1,0 +1,46 @@
+projection;
+strict ( 2 );
+use draft;
+
+define behavior for ZC_PO_HEAD_DT_D_D alias Header
+use etag
+{
+  use create;
+  use update;
+  use delete;
+
+  use action Resume;
+  use action Edit;
+  use action Activate;
+  use action Discard;
+  use action Prepare;
+  use action validatePOType;
+
+  //  field ( mandatory : create, readonly : update ) Ponum;
+  field ( readonly ) PoNum, PoUuid;
+
+  use action CopyPO;
+  use action CreatePO;
+  use action Approved;
+  use action ChangePOStatus;
+  use action Selected;
+
+  side effects
+  {
+    field Vendor affects field Status;
+    determine action Prepare executed on field CompCode affects field Org;
+    determine action validatePOType executed on field Type affects messages;
+    //    determine action Prepare executed on field Type affects messages;
+  }
+
+  use association _Items { create; with draft; }
+}
+
+define behavior for ZC_PO_ITEMS_DT_D_D alias Item
+use etag
+{
+  use update;
+  use delete;
+
+  use association _Header { with draft; }
+}

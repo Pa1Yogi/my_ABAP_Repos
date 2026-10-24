@@ -1,0 +1,28 @@
+managed implementation in class zbp_i_po_hds_dt unique;
+strict ( 2 );
+
+define behavior for ZI_PO_HDS_DT //alias <alias_name>
+persistent table ztb_pohead_dt
+lock master
+authorization master ( instance )
+//etag master <field_name>
+with additional save
+{
+  create ( authorization : global );
+  update;
+  delete;
+  field ( readonly ) Ponum;
+  association _Items { create; }
+}
+
+define behavior for ZI_PO_ITS_DTS //alias <alias_name>
+persistent table ztb_poitems_dt
+lock dependent by _POHd
+authorization dependent by _POHd
+//etag master <field_name>
+{
+  update;
+  delete;
+  field ( readonly ) Ponum, Poitem;
+  association _POHd;
+}
