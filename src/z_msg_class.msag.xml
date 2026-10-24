@@ -1,0 +1,56 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<abapGit version="v1.0.0" serializer="LCL_OBJECT_MSAG" serializer_version="v1.0.0">
+ <asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">
+  <asx:values>
+   <T100A>
+    <ARBGB>Z_MSG_CLASS</ARBGB>
+    <MASTERLANG>E</MASTERLANG>
+    <STEXT>Message Class</STEXT>
+   </T100A>
+   <T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>Z_MSG_CLASS</ARBGB>
+     <MSGNR>000</MSGNR>
+     <TEXT>TYPE Not Allowed</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>Z_MSG_CLASS</ARBGB>
+     <MSGNR>001</MSGNR>
+     <TEXT>Storage Location Not Allowed</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>Z_MSG_CLASS</ARBGB>
+     <MSGNR>002</MSGNR>
+     <TEXT>PO &amp;1 is locked by &amp;2</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>Z_MSG_CLASS</ARBGB>
+     <MSGNR>003</MSGNR>
+     <TEXT>You are not authorized to perform this activity.</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>Z_MSG_CLASS</ARBGB>
+     <MSGNR>004</MSGNR>
+     <TEXT>Number range object almost depleted.</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>Z_MSG_CLASS</ARBGB>
+     <MSGNR>005</MSGNR>
+     <TEXT>Not enough keys for all instances.</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>Z_MSG_CLASS</ARBGB>
+     <MSGNR>006</MSGNR>
+     <TEXT>You are not authorized to perform this activity.</TEXT>
+    </T100>
+   </T100>
+  </asx:values>
+ </asx:abap>
+</abapGit>
